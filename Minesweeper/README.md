@@ -1,11 +1,11 @@
 
-# Minesweeper Advanced (Python)
+# Minesweeper (Python)
 
-A complex and beautiful version of Minesweeper built in Python with DFS algorithm.
+A complex version of Minesweeper made in Python with the DFS algorithm.
 
 ## Features
 - Timer & scoring
 - Multiple difficulty levels
 - Local leaderboard (JSON)
-- Reset and flagging system
-- Depth-First Search for opening empty cells
+- Reset and flag system
+- Depth First Search to open empty cells
