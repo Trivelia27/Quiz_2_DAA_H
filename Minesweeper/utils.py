@@ -39,9 +39,15 @@ def save_leaderboard(scores, file_path="leaderboard.json"):
     with open(file_path, "w") as f:
         json.dump(scores, f, indent=4)
 
-def add_score(name, score, file_path="leaderboard.json"):
+def add_score(name, score, level, duration, file_path="leaderboard.json"):
     scores = load_leaderboard(file_path)
-    scores.append({"name": name, "score": score})
+    scores.append({
+        "name": name,
+        "score": score,
+        "level": level,
+        "duration": duration  # dalam detik, misalnya
+    })
+    # Sort descending by score
     scores.sort(key=lambda x: -x["score"])
     scores = scores[:10]  # Keep top 10 scores
     save_leaderboard(scores, file_path)
