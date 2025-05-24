@@ -2,16 +2,36 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog, ttk
 import time
 import pygame
+import os
 from game import MinesweeperGame
 from utils import format_time, add_score, load_leaderboard
 
+# 🔊 Load sounds safely
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 pygame.mixer.init()
-click_sound = pygame.mixer.Sound("click.wav")
-explosion_sound = pygame.mixer.Sound("explosion.wav")
-win_sound = pygame.mixer.Sound("win.wav")
-pygame.mixer.music.load("background.mp3")
-pygame.mixer.music.set_volume(0.2)
-pygame.mixer.music.play(-1)
+
+def load_sound(file_name):
+    full_path = os.path.join(BASE_DIR, file_name)
+    if os.path.exists(full_path):
+        return pygame.mixer.Sound(full_path)
+    else:
+        print(f"[WARNING] Sound file not found: {file_name}")
+        return None
+
+click_sound = load_sound("click.wav")
+explosion_sound = load_sound("explosion.wav")
+win_sound = load_sound("win.wav")
+
+bg_music_path = os.path.join(BASE_DIR, "background.mp3")
+if os.path.exists(bg_music_path):
+    pygame.mixer.music.load(bg_music_path)
+    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.play(-1)
+else:
+    print("[WARNING] Background music not found. Skipping.")
+
+# =================== GUI CLASS ========================
 
 class StartScreen(tk.Frame):
     def __init__(self, master, start_callback):
@@ -185,16 +205,19 @@ class MinesweeperApp(tk.Tk):
         cell = self.game.board[x][y]
         if cell.flagged or cell.revealed:
             return
-        click_sound.play()
+        if click_sound:
+            click_sound.play()
         self.game.reveal_cell(x, y)
         self.update_buttons()
         self.update_info_label()
         if self.game.is_game_over:
             if self.game.is_win:
-                win_sound.play()
+                if win_sound:
+                    win_sound.play()
                 self.game_over(True)
             else:
-                explosion_sound.play()
+                if explosion_sound:
+                    explosion_sound.play()
                 self.reveal_all()
                 self.game_over(False)
 
@@ -205,7 +228,8 @@ class MinesweeperApp(tk.Tk):
         if cell.revealed:
             return
         cell.toggle_flag()
-        click_sound.play()
+        if click_sound:
+            click_sound.play()
         self.update_buttons()
         self.update_info_label()
 
@@ -247,6 +271,8 @@ class MinesweeperApp(tk.Tk):
 
     def game_over(self, win, timeout=False):
         self.timer_running = False
+        for btn in self.buttons.values():
+            btn.config(state=tk.DISABLED)
         if win:
             msg = f"Congratulations {self.player_name}! You Win!\nYour score: {self.score}\nTime: {format_time(self.elapsed_time)}"
         else:
@@ -266,6 +292,7 @@ class MinesweeperApp(tk.Tk):
         if not scores:
             text += "No scores yet."
         messagebox.showinfo("Leaderboard", text)
+
 
 if __name__ == "__main__":
     app = MinesweeperApp()
