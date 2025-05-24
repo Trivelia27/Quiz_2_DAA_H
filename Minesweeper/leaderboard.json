@@ -1,6 +1,8 @@
 [
     {
         "name": "ana",
-        "score": 0
+        "score": 0,
+        "level": "Easy",
+        "duration": 19
     }
 ]
