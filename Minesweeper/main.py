@@ -145,7 +145,7 @@ class MinesweeperApp(tk.Tk):
     def show_about(self):
         messagebox.showinfo(
             "About Minesweeper Interactive",
-            "Minesweeper Interactive\n\nCreated by Fela, Miski, \n\nFind all the mines without triggering any!\nFlag suspected mines and clear the board.\n\nEnjoy the game!"
+            "Minesweeper Interactive\n\nCreated by Triana, Fela, and Miski. \n\nFind all the mines without triggering any!\nFlag suspected mines and clear the board.\n\nEnjoy the game!"
         )
 
     def start_game(self, player_name):

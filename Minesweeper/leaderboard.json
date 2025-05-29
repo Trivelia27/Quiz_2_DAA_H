@@ -18,6 +18,18 @@
         "duration": 3
     },
     {
+        "name": "misk",
+        "score": 3,
+        "level": "Easy",
+        "duration": 4
+    },
+    {
+        "name": "Player",
+        "score": 3,
+        "level": "Easy",
+        "duration": 56
+    },
+    {
         "name": "miskk",
         "score": 1,
         "level": "Easy",

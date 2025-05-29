@@ -27,12 +27,12 @@ class MinesweeperGame:
     def _place_mines(self, safe_r, safe_c):
         positions = set()
         forbidden = {(safe_r, safe_c)}
-        # Optionally, avoid placing mines around the first click (uncomment below for friendlier behavior)
-        # for dr in [-1, 0, 1]:
-        #     for dc in [-1, 0, 1]:
-        #         nr, nc = safe_r + dr, safe_c + dc
-        #         if 0 <= nr < self.rows and 0 <= nc < self.cols:
-        #             forbidden.add((nr, nc))
+        # Optionally, avoid placing mines around the first click 
+        for dr in [-1, 0, 1]:
+            for dc in [-1, 0, 1]:
+                nr, nc = safe_r + dr, safe_c + dc
+                if 0 <= nr < self.rows and 0 <= nc < self.cols:
+                    forbidden.add((nr, nc))
         while len(positions) < self.mines:
             r = random.randint(0, self.rows - 1)
             c = random.randint(0, self.cols - 1)
