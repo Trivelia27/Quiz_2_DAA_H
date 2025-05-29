@@ -1,8 +1,20 @@
 [
     {
-        "name": "ana",
-        "score": 0,
+        "name": "miski",
+        "score": 7,
+        "level": "Medium",
+        "duration": 5
+    },
+    {
+        "name": "miski",
+        "score": 5,
         "level": "Easy",
-        "duration": 19
+        "duration": 5
+    },
+    {
+        "name": "miski",
+        "score": 4,
+        "level": "Easy",
+        "duration": 3
     }
 ]

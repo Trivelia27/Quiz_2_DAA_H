@@ -13,6 +13,7 @@ class Cell:
     def toggle_flag(self):
         self.flagged = not self.flagged
 
+
 class MinesweeperGame:
     def __init__(self, rows, cols, mines):
         self.rows = rows
@@ -21,17 +22,26 @@ class MinesweeperGame:
         self.board = [[Cell() for _ in range(cols)] for _ in range(rows)]
         self.is_game_over = False
         self.is_win = False
-        self._place_mines()
-        self._calculate_adjacent_mines()
+        self.mines_placed = False  # Delay mine placement
 
-    def _place_mines(self):
+    def _place_mines(self, safe_r, safe_c):
         positions = set()
+        forbidden = {(safe_r, safe_c)}
+        # Optionally, avoid placing mines around the first click (uncomment below for friendlier behavior)
+        # for dr in [-1, 0, 1]:
+        #     for dc in [-1, 0, 1]:
+        #         nr, nc = safe_r + dr, safe_c + dc
+        #         if 0 <= nr < self.rows and 0 <= nc < self.cols:
+        #             forbidden.add((nr, nc))
         while len(positions) < self.mines:
             r = random.randint(0, self.rows - 1)
             c = random.randint(0, self.cols - 1)
-            if not self.board[r][c].is_mine:
-                self.board[r][c].is_mine = True
-                positions.add((r, c))
+            if (r, c) in forbidden or self.board[r][c].is_mine:
+                continue
+            self.board[r][c].is_mine = True
+            positions.add((r, c))
+        self._calculate_adjacent_mines()
+        self.mines_placed = True
 
     def _calculate_adjacent_mines(self):
         for r in range(self.rows):
@@ -50,6 +60,10 @@ class MinesweeperGame:
     def reveal_cell(self, r, c):
         if self.board[r][c].flagged or self.board[r][c].revealed:
             return
+
+        # Place mines on first click, ensuring (r, c) is safe
+        if not self.mines_placed:
+            self._place_mines(r, c)
 
         if self.board[r][c].is_mine:
             self.board[r][c].revealed = True
@@ -87,3 +101,5 @@ class MinesweeperGame:
                     return
         self.is_game_over = True
         self.is_win = True
+
+    

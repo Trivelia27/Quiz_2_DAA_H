@@ -29,15 +29,32 @@ def format_time(seconds):
     return f"{mins:02d}:{secs:02d}"
 
 def load_leaderboard(file_path="leaderboard.json"):
-    if os.path.exists(file_path):
+    if not os.path.exists(file_path):
+        # Jika file tidak ada, buat file kosong
+        with open(file_path, "w") as f:
+            json.dump([], f)
+        return []
+    try:
         with open(file_path, "r") as f:
-            return json.load(f)
-    else:
+            data = json.load(f)
+            # Validasi: pastikan data list of dict
+            if isinstance(data, list):
+                return data
+            else:
+                return []
+    except Exception as e:
+        print(f"[ERROR] Failed to load leaderboard: {e}")
+        # Jika file corrupt, reset leaderboard
+        with open(file_path, "w") as f:
+            json.dump([], f)
         return []
 
 def save_leaderboard(scores, file_path="leaderboard.json"):
-    with open(file_path, "w") as f:
-        json.dump(scores, f, indent=4)
+    try:
+        with open(file_path, "w") as f:
+            json.dump(scores, f, indent=4)
+    except Exception as e:
+        print(f"[ERROR] Failed to save leaderboard: {e}")
 
 def add_score(name, score, level, duration, file_path="leaderboard.json"):
     scores = load_leaderboard(file_path)
@@ -45,9 +62,9 @@ def add_score(name, score, level, duration, file_path="leaderboard.json"):
         "name": name,
         "score": score,
         "level": level,
-        "duration": duration  # dalam detik, misalnya
+        "duration": duration  # dalam detik
     })
-    # Sort descending by score
-    scores.sort(key=lambda x: -x["score"])
+    # Sort descending by score, jika sama urutkan berdasarkan waktu tercepat
+    scores.sort(key=lambda x: (-x["score"], x["duration"]))
     scores = scores[:10]  # Keep top 10 scores
     save_leaderboard(scores, file_path)
